@@ -1,0 +1,19 @@
+from sqlalchemy.orm import Session
+from .models import ExchangeRate
+from datetime import datetime
+import uuid
+
+def store_rate(db: Session, base: str, target: str, rate: float):
+    new_entry = ExchangeRate(
+        id=str(uuid.uuid4()),
+        base=base,
+        target=target,
+        rate=rate,
+        timestamp=datetime.utcnow()
+    )
+    db.add(new_entry)
+    db.commit()
+
+def get_latest_rate(db: Session, base: str, target: str):
+    return db.query(ExchangeRate).filter_by(base=base, target=target).order_by(ExchangeRate.timestamp.desc()).first()
+

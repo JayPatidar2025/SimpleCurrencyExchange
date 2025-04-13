@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Currency Exchange</title>
+</head>
+<body>
+    <h1>Currency Exchange</h1>
+
+    <h2>Stored Exchange Rates</h2>
+    <table border="1">
+        <tr>
+            <th>Base</th>
+            <th>Target</th>
+            <th>Rate</th>
+            <th>Timestamp</th>
+        </tr>
+        {% for rate in rates %}
+        <tr>
+            <td>{{ rate.base }}</td>
+            <td>{{ rate.target }}</td>
+            <td>{{ rate.rate }}</td>
+            <td>{{ rate.timestamp }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h2>Convert Currency</h2>
+    <form method="post" action="/exchange">
+        <label>From Currency: <input type="text" name="from_currency" required></label><br>
+        <label>To Currency: <input type="text" name="to_currency" required></label><br>
+        <label>Amount: <input type="number" step="0.01" name="amount" required></label><br>
+        <input type="submit" value="Convert">
+    </form>
+
+    {% if result %}
+    <h3>Exchange Result:</h3>
+    <p>Rate: {{ result.rate }}</p>
+    <p>Converted Amount: {{ result.result }}</p>
+    <p>Fee: {{ result.fee }}</p>
+    {% elif error %}
+    <p style="color:red;">{{ error }}</p>
+    {% endif %}
+</body>
+</html>
+
