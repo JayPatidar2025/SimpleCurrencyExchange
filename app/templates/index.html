@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Currency Exchange</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 20px;
+        }
+        h1 {
+            color: #2c3e50;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+        .box {
+            padding: 20px;
+            background: #ecf0f1;
+            border-radius: 8px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #2c3e50;
+            color: white;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: #34495e;
+            color: white;
+            padding: 10px;
+            font-size: 18px;
+        }
+    </style>
+    <script>
+        function fetchRates() {
+            fetch("/rates/store")
+                .then(response => response.json())
+                .then(data => alert("Exchange rates updated successfully!"))
+                .catch(error => alert("Error updating rates!"));
+        }
+    </script>
+</head>
+<body>
+    <div class="navbar">Currency Exchange System</div>
+
+    <div class="container">
+        <h1>Currency Exchange</h1>
+
+        <button onclick="fetchRates()">Get Latest Rates</button>  
+
+        <div class="grid">
+            <div class="box">
+                <h2>Convert Currency</h2>
+                <form method="post" action="/exchange">
+                    <label>From Currency:</label>
+                    <input type="text" name="from_currency" required>
+
+                    <label>To Currency:</label>
+                    <input type="text" name="to_currency" required>
+
+                    <label>Amount:</label>
+                    <input type="number" step="0.01" name="amount" required>
+
+                    <button type="submit">Get Exchange Rate</button>
+                </form>
+            </div>
+
+            {% if result %}
+            <h3>Exchange Result:</h3>
+            <p><strong>Rate:</strong> {{ result.rate }}</p>
+            <p><strong>Converted Amount:</strong> {{ result.result }}</p>
+            <p><strong>Fee:</strong> {{ result.fee }}</p>
+            {% elif error %}
+            <p style="color:red;">{{ error }}</p>
+            {% endif %}
+
+            <div class="box">
+                <h2>Stored Exchange Rates</h2>
+                <table>
+                    <tr>
+                        <th>Base</th>
+                        <th>Target</th>
+                        <th>Rate</th>
+                        <th>Timestamp</th>
+                    </tr>
+                    {% for rate in rates %}
+                    <tr>
+                        <td>{{ rate.base }}</td>
+                        <td>{{ rate.target }}</td>
+                        <td>{{ rate.rate }}</td>
+                        <td>{{ rate.timestamp }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

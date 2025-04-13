@@ -1,0 +1,10 @@
+fastapi
+uvicorn[standard]
+sqlalchemy
+psycopg2-binary
+httpx
+apscheduler
+python-dotenv
+jinja2
+aiohttp
+python-multipart
