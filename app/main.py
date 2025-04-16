@@ -116,6 +116,9 @@ def calculate_exchange(
 
     spread = float(os.getenv("SPREAD_PERCENT", 1.5))
 
+    from_currency = from_currency.upper()
+    to_currency = to_currency.upper()
+
     # Get exchange rates for EUR-based conversions
     rate_from_eur = crud.get_latest_rate(db, "EUR", from_currency)
     rate_to_eur = crud.get_latest_rate(db, "EUR", to_currency)
@@ -145,13 +148,15 @@ def calculate_exchange(
     # Apply spread and calculate final amount
     fee = (rate * spread / 100) * amount
     total = amount * rate - fee
-    result = schemas.ExchangeOutput(rate=rate, result=total, fee=fee)
+    result = schemas.ExchangeOutput(rate=rate, result=total, fee=fee, from_currency=from_currency.upper(), to_currency=to_currency.upper() )
 
     logger.info(f"Exchange successful: {amount} {from_currency} → {total} {to_currency} @ Rate {rate}, Fee: {fee}")
 
     return templates.TemplateResponse("index.html", {
         "request": request,
         "rates": crud.get_all_latest_rates(db),
-        "result": result
+        "result": result,
+        "from_currency": from_currency.upper(),
+        "to_currency": to_currency.upper()
     })
 
